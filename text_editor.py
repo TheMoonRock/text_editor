@@ -4,13 +4,9 @@ from tkinter import filedialog
 import textract
 import subprocess
 from docx import Document
-# TODO панель наверху
-# TODO возможность открытия и сохраниния файла
-
 
 # В будущем испольщовать rope структуры данных вместо готовых компонентов
 # идея сделать текстовый редакор с встроенным AI. Короче хочу сделать дописывание текста как в notion.
-# Добавить поддержку .doc формата
 # добавить ctrl+z
 class Editor:
     def __init__(self, window):
@@ -33,7 +29,8 @@ class Editor:
         self.current_file_path = None # Атрибут для хранения пути к файлу
 
         self.shortcuts()
-
+        
+        # Вызываем метод для уведомлений
         self.status_bar = Label(self.window, text="", bd=1, relief=SUNKEN, anchor=W)
         self.status_bar.pack(side=BOTTOM, fill=X)
 
@@ -46,6 +43,8 @@ class Editor:
             if file_path.endswith('.docx'):
                 doc = Document(file_path)
                 # para это просто переменная. Она не инициализируется явно
+                # join объеденяет элементы
+                # \n разделитель. В данном случае каждый новый элемент с новой строки
                 content = '\n'.join([para.text for para in doc.paragraphs])
             elif file_path.endswith('.doc'):
                 # unoconv для ковертации .doc в текст
@@ -57,7 +56,6 @@ class Editor:
             self.text_area.delete(1.0, tkinter.END) # tkinter.END константа либы тк
             self.text_area.insert(tkinter.END, content)
 # TODO Кнопка "сохранить как"
-# TODO ctrl+s уведомление, так как непонятно успешно сохранение или нет
     def save_file(self, event=None):
         if self.current_file_path:
             text = self.text_area.get("1.0", tkinter.END)
@@ -85,9 +83,10 @@ class Editor:
                         self.current_file_path = file_path # Сохраняем путь к файлу
 
     def update_status(self,message):
+        # обновляем текст на панели состояния с помощью переданного сообщения
         self.status_bar.config(text=message)
-
-        self.window.after(5000, lambda: self.status_bar.config(text="Done"))
+        # Изменяем текст 5 секунд
+        self.window.after(5000, lambda: self.status_bar.config(text=""))
 
     def shortcuts(self):
         self.text_area.bind("<Control-s>",self.save_file)
