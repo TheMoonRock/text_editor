@@ -32,6 +32,8 @@ class Editor:
 
         self.current_file_path = None # Атрибут для хранения пути к файлу
 
+        self.shortcuts()
+
     def new_file(self):
         pass
 
@@ -52,7 +54,7 @@ class Editor:
             self.text_area.insert(tkinter.END, content)
 # TODO Кнопка "сохранить как"
 # TODO ctrl+s
-    def save_file(self):
+    def save_file(self, event=None):
         if self.current_file_path:
             text = self.text_area.get("1.0", tkinter.END)
             if self.current_file_path.endswith('.docx'):
@@ -75,6 +77,9 @@ class Editor:
                     with open(file_path, 'w', encoding='utf-8') as file:
                         file.write(text)
                         self.current_file_path = file_path # Сохраняем путь к файлу
+
+    def shortcuts(self):
+        self.text_area.bind("<Control-s>",self.save_file)
 
 # TODO настройка отступов и интервалов у пользователя + интерфейс линейка для настройки красной строки
 window = tkinter.Tk() # взяли из тк класс и создали его экземпляр
