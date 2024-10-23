@@ -21,6 +21,7 @@ class Editor:
         file_menu.add_command(label="New", command=self.new_file)
         file_menu.add_command(label="Open", command=self.open_file)
         file_menu.add_command(label="save", command=self.save_file)
+        file_menu.add_command(label="Save As", command=self.save_as)
 
         self.menubar.add_cascade(label="File", menu=file_menu)
 
@@ -55,7 +56,7 @@ class Editor:
 
             self.text_area.delete(1.0, tkinter.END) # tkinter.END константа либы тк
             self.text_area.insert(tkinter.END, content)
-# TODO Кнопка "сохранить как"
+
     def save_file(self, event=None):
         if self.current_file_path:
             text = self.text_area.get("1.0", tkinter.END)
@@ -82,6 +83,12 @@ class Editor:
                         file.write(text)
                         self.current_file_path = file_path # Сохраняем путь к файлу
 
+    def save_as(self):
+        file_path = filedialog.asksaveasfilename(filetypes=[("Text files", "*.txt"), ("Word documents", "*.docx")])
+        if file_path:
+            self.current_file_path = file_path # сохраняем путь к файлу
+            self.save_file() # вызываем метод сохранения
+
     def update_status(self,message):
         # обновляем текст на панели состояния с помощью переданного сообщения
         self.status_bar.config(text=message)
@@ -90,7 +97,7 @@ class Editor:
 
     def shortcuts(self):
         self.text_area.bind("<Control-s>",self.save_file)
-
+# TODO Настройка шрифтов, вид шрифта и размер, жирность, курсив
 # TODO настройка отступов и интервалов у пользователя + интерфейс линейка для настройки красной строки
 window = tkinter.Tk() # взяли из тк класс и создали его экземпляр
 Editor(window) # создаём экземпляр класса эдитор и передаём ему виндов
